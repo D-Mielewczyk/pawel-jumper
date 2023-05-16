@@ -1,6 +1,6 @@
 import pygame
 
-WIDTH, HEIGHT = 1000, 550
+WIDTH, HEIGHT = 600, 1100
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
 pygame.display.set_caption("Paweł Jumper")
