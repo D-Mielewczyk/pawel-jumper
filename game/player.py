@@ -1,3 +1,5 @@
+import pygame
+
 from object import Object
 from utils import load_sprites
 
@@ -11,6 +13,7 @@ class Player(Object):
         self.direction = "right"
         self.animation = 0
         self.fall_count = 0
+        self.mask = None
 
     def go_left(self, velocity):
         self.x_vel = -velocity
@@ -43,6 +46,11 @@ class Player(Object):
 
         self.fall_count += 1
         self.set_sprite()
+        self.update_mask()
+
+    def update_mask(self):
+        self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))
+        self.mask = pygame.mask.from_surface(self.sprite)
 
     def draw(self, window):
         window.blit(self.sprite, (self.rect.x, self.rect.y))

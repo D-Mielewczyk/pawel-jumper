@@ -2,6 +2,7 @@ import os
 import pygame
 
 from player import Player
+from platform import Platform
 
 pygame.init()
 
@@ -28,11 +29,14 @@ def get_background(color):
     return tiles, image
 
 
-def draw_window(window, background, background_image, player):
+def draw_window(window, background, background_image, player, platforms):
     for tile in background:
         window.blit(background_image, tile)
 
     player.draw(window)
+
+    for p in platforms:
+        p.draw(window)
 
     pygame.display.update()
 
@@ -51,6 +55,7 @@ def game_loop(window):
     clock = pygame.time.Clock()
 
     player = Player(100, 100, 50, 50)
+    platforms = [Platform(i, 600) for i in range(0, WIDTH+1, 96)]
 
     background, background_image = get_background("Blue.png")
 
@@ -64,7 +69,7 @@ def game_loop(window):
 
         player.loop()
         handle_movement(player)
-        draw_window(window, background, background_image, player)
+        draw_window(window, background, background_image, player, platforms)
     pygame.quit()
     quit()
 
