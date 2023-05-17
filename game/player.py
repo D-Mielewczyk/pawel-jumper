@@ -1,7 +1,7 @@
 import pygame
 
 from object import Object
-from utils import load_sprites
+from utils import load_sprites, FPS, GRAVITY
 
 
 class Player(Object):
@@ -39,8 +39,12 @@ class Player(Object):
         self.sprite = sprites[index]
         self.animation += 1
 
+    def landed(self):
+        self.fall_count = 0 
+        self.y_vel = 0
+
     def loop(self):
-        # self.y_vel += min(1, (self.fall_count / FPS) * GRAVITY)
+        self.y_vel += min(1, (self.fall_count / FPS) * GRAVITY)
         self.rect.x += self.x_vel
         self.rect.y += self.y_vel
 

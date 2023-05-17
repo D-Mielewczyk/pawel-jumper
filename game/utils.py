@@ -3,6 +3,9 @@ import pygame
 
 pygame.init()
 
+FPS = 60
+GRAVITY = 1
+
 # We need to mock window here so .convert_alpha() works
 WINDOW = pygame.display.set_mode((1000, 1000))
 

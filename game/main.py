@@ -3,6 +3,7 @@ import pygame
 
 from player import Player
 from platform import Platform
+from utils import FPS, GRAVITY
 
 pygame.init()
 
@@ -11,9 +12,8 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
 pygame.display.set_caption("Paweł Jumper")
 
-FPS = 60
 PLAYER_VEL = 5
-GRAVITY = 1
+
 
 
 def get_background(color):
@@ -29,19 +29,30 @@ def get_background(color):
     return tiles, image
 
 
-def draw_window(window, background, background_image, player, platforms):
+def draw_window(window, background, background_image, player, *objects):
     for tile in background:
         window.blit(background_image, tile)
 
-    player.draw(window)
+    for obj in objects:
+        obj.draw(window)
 
-    for p in platforms:
-        p.draw(window)
+    # Allways draw player last so he is on top
+    player.draw(window)
 
     pygame.display.update()
 
+def handle_vert_collision(player, *objects):
+    collided = [obj for obj in objects if pygame.sprite.collide_mask(player, obj)]
 
-def handle_movement(player):
+    for obj in collided:
+        if player.y_vel > 0:
+            player.rect.bottom = obj.rect.top
+            player.landed()
+
+    return collided
+
+
+def handle_movement(player, *objects):
     keys = pygame.key.get_pressed()
 
     player.x_vel = 0
@@ -50,12 +61,14 @@ def handle_movement(player):
     if keys[pygame.K_RIGHT]:
         player.go_right(PLAYER_VEL)
 
+    handle_vert_collision(player, *objects)
+
 
 def game_loop(window):
     clock = pygame.time.Clock()
 
     player = Player(100, 100, 50, 50)
-    platforms = [Platform(i, 600) for i in range(0, WIDTH+1, 96)]
+    platforms = [Platform(i, 600) for i in range(0, WIDTH + 1, 96)]
 
     background, background_image = get_background("Blue.png")
 
@@ -68,8 +81,8 @@ def game_loop(window):
                 break
 
         player.loop()
-        handle_movement(player)
-        draw_window(window, background, background_image, player, platforms)
+        handle_movement(player, *platforms)
+        draw_window(window, background, background_image, player, *platforms)
     pygame.quit()
     quit()
 
