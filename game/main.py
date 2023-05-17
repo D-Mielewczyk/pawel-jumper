@@ -79,6 +79,9 @@ def game_loop(window):
             if event.type == pygame.QUIT:
                 run = False
                 break
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP and player.jumps < 2:
+                    player.jump()
 
         player.loop()
         handle_movement(player, *platforms)

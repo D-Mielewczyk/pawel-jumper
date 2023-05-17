@@ -14,6 +14,7 @@ class Player(Object):
         self.animation = 0
         self.fall_count = 0
         self.mask = None
+        self.jumps = 0
 
     def go_left(self, velocity):
         self.x_vel = -velocity
@@ -27,9 +28,25 @@ class Player(Object):
             self.direction = "right"
             self.animation = 0
 
+    def jump(self):
+        self.y_vel = -GRAVITY * 12
+        self.animation_count = 0
+        self.jumps += 1
+        if self.jumps == 1:
+            self.fall_count = 0
+        elif self.jumps == 2:
+            self.y_vel = -GRAVITY * 20
+
     def set_sprite(self):
         sprite = "Idle (32x32)"
-        if self.x_vel != 0:
+        if self.y_vel < 0:
+            if self.jumps == 1:
+                sprite = "Jump (32x32)"
+            elif self.jumps == 2:
+                sprite = "Double Jump (32x32)"
+        elif self.y_vel > 0:
+            sprite = "Fall (32x32)"
+        elif self.x_vel != 0:
             sprite = "Run (32x32)"
 
         sprite_name = f"{sprite}_{self.direction}"
@@ -40,8 +57,10 @@ class Player(Object):
         self.animation += 1
 
     def landed(self):
-        self.fall_count = 0 
+        self.fall_count = 0
         self.y_vel = 0
+        self.jumps = 0
+        self.jump()
 
     def loop(self):
         self.y_vel += min(1, (self.fall_count / FPS) * GRAVITY)
