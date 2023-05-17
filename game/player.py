@@ -74,6 +74,3 @@ class Player(Object):
     def update_mask(self):
         self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))
         self.mask = pygame.mask.from_surface(self.sprite)
-
-    def draw(self, window):
-        window.blit(self.sprite, (self.rect.x, self.rect.y))

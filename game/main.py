@@ -13,6 +13,7 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Paweł Jumper")
 
 PLAYER_VEL = 5
+SCROLL_AREA_HEIGHT = 200
 
 
 
@@ -29,15 +30,15 @@ def get_background(color):
     return tiles, image
 
 
-def draw_window(window, background, background_image, player, *objects):
+def draw_window(window, background, background_image, offset_y, player, *objects):
     for tile in background:
         window.blit(background_image, tile)
 
     for obj in objects:
-        obj.draw(window)
+        obj.draw(window, offset_y)
 
     # Allways draw player last so he is on top
-    player.draw(window)
+    player.draw(window, offset_y)
 
     pygame.display.update()
 
@@ -63,14 +64,21 @@ def handle_movement(player, *objects):
 
     handle_vert_collision(player, *objects)
 
+def handle_camera(player, offset_y):
+    if (player.rect.top + offset_y <= SCROLL_AREA_HEIGHT and player.y_vel < 0):
+            offset_y += player.y_vel
+    return offset_y
+
 
 def game_loop(window):
     clock = pygame.time.Clock()
 
     player = Player(100, 100, 50, 50)
-    platforms = [Platform(i, 600) for i in range(0, WIDTH + 1, 96)]
+    platforms = [Platform(i, HEIGHT - 75) for i in range(0, WIDTH + 1, 96)] + [Platform(200, 400), Platform(400, 200)]
 
     background, background_image = get_background("Blue.png")
+
+    offset_y = 0
 
     run = True
     while run:
@@ -85,7 +93,11 @@ def game_loop(window):
 
         player.loop()
         handle_movement(player, *platforms)
-        draw_window(window, background, background_image, player, *platforms)
+        draw_window(window, background, background_image, offset_y, player, *platforms)
+
+        offset_y = handle_camera(player, offset_y)
+
+
     pygame.quit()
     quit()
 

@@ -7,7 +7,7 @@ class Object(pygame.sprite.Sprite):
         self.rect = pygame.Rect(x, y, width, height)
         self.x_vel = 0
         self.y_vel = 0
-        self.image = pygame.Surface((width, height), pygame.SRCALPHA)
+        self.sprite = pygame.Surface((width, height), pygame.SRCALPHA)
 
-    def draw(self, window):
-        window.blit(self.image, (self.rect.x, self.rect.y))
+    def draw(self, window, offset_y):
+        window.blit(self.sprite, (self.rect.x, self.rect.y - offset_y))

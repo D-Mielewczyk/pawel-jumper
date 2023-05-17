@@ -14,7 +14,7 @@ def load_platform(width, height):
 class Platform(Object):
     def __init__(self, x, y, width=96, height=10):
         super().__init__(x, y, width, height)
-        self.image.blit(load_platform(width, height), (0, 0))
-        self.mask = pygame.mask.from_surface(self.image)
+        self.sprite.blit(load_platform(width, height), (0, 0))
+        self.mask = pygame.mask.from_surface(self.sprite)
 
 # 46 4
