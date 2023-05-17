@@ -1,7 +1,7 @@
 import pygame
 
 from object import Object
-from utils import load_sprites, FPS, GRAVITY
+from utils import load_sprites, FPS, GRAVITY, HEIGHT
 
 
 class Player(Object):
@@ -15,6 +15,7 @@ class Player(Object):
         self.fall_count = 0
         self.mask = None
         self.jumps = 0
+        self.dead_height = HEIGHT
 
     def go_left(self, velocity):
         self.x_vel = -velocity

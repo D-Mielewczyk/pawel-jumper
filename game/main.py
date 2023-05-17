@@ -3,11 +3,10 @@ import pygame
 
 from player import Player
 from platform import Platform
-from utils import FPS, GRAVITY
+from utils import FPS, GRAVITY, WIDTH, HEIGHT
 
 pygame.init()
 
-WIDTH, HEIGHT = 600, 1100
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
 pygame.display.set_caption("Paweł Jumper")
@@ -67,14 +66,23 @@ def handle_movement(player, *objects):
 def handle_camera(player, offset_y):
     if (player.rect.top + offset_y <= SCROLL_AREA_HEIGHT and player.y_vel < 0):
             offset_y += player.y_vel
+            player.dead_height += player.y_vel
     return offset_y
 
+def game_over():
+    print("GAME OVER")
+    pygame.time.wait(500)
+    exit()
+
+def check_loose(player):
+    if player.rect.top >= player.dead_height:
+        game_over()
 
 def game_loop(window):
     clock = pygame.time.Clock()
 
     player = Player(100, 100, 50, 50)
-    platforms = [Platform(i, HEIGHT - 75) for i in range(0, WIDTH + 1, 96)] + [Platform(200, 400), Platform(400, 200)]
+    platforms = [Platform(i, HEIGHT - 75) for i in range(0, WIDTH + 1, 240)] + [Platform(200, 400), Platform(400, 200)]
 
     background, background_image = get_background("Blue.png")
 
@@ -94,8 +102,8 @@ def game_loop(window):
         player.loop()
         handle_movement(player, *platforms)
         draw_window(window, background, background_image, offset_y, player, *platforms)
-
         offset_y = handle_camera(player, offset_y)
+        check_loose(player)
 
 
     pygame.quit()
