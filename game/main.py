@@ -13,6 +13,34 @@ FPS = 60
 PLAYER_VEL = 5
 GRAVITY = 1
 
+def rotate(sprite):
+    return pygame.transform.flip(sprite, True, False)
+
+def load_sprites(path, width, height, do_rotate=False):
+    path = f"assets/{path}"
+    images = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+
+    sprites = {}
+
+    for image in images:
+        sprite_sheet = pygame.image.load(os.path.join(path, image)).convert_alpha()
+
+        frames = []
+        for i in range(sprite_sheet.get_width() // width):
+            surface = pygame.Surface((width, height), pygame.SRCALPHA, 32)
+            rect = pygame.Rect(i * width, 0, width, height)
+            surface.blit(sprite_sheet, (0, 0), rect)
+            frames.append(pygame.transform.scale2x(surface))
+        
+        if do_rotate:
+            sprites[image.replace(".png", "") + "_right"] = frames
+            sprites[image.replace(".png", "") + "_left"] = [rotate(f) for f in frames]
+        else:
+            sprites[image.replace(".png", "")] = sprites
+
+    return sprites
+
+
 
 class Object(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height):
@@ -25,20 +53,21 @@ class Object(pygame.sprite.Sprite):
 class Player(Object):
     def __init__(self, x, y, width, height):
         super().__init__(x, y, width, height)
-        self.direction = None
+        self.direction = "right"
         self.animation = 0
         self.fall_count = 0
+        self.sprites = load_sprites("Main characters/Ninja Frog", 32, 32, True)
 
     def go_left(self, velocity):
         self.x_vel = -velocity
         if self.direction != "left":
-            self.direction == "left"
+            self.direction = "left"
             self.animation = 0
 
     def go_right(self, velocity):
         self.x_vel = velocity
         if self.direction != "right":
-            self.direction == "right"
+            self.direction = "right"
             self.animation = 0
 
     def loop(self):
@@ -50,7 +79,8 @@ class Player(Object):
 
 
     def draw(self, window):
-        pygame.draw.rect(window, (10, 100, 200), self.rect)
+        self.sprite = self.sprites["Idle (32x32)_" + self.direction][0]
+        window.blit(self.sprite, (self.rect.x, self.rect.y))
 
 
 
@@ -99,9 +129,7 @@ def game_loop(window):
             if event.type == pygame.QUIT:
                 run = False
                 break
-            # if event.type == pygame.KEYDOWN:
-            #     if event.key == pygame.K_r:
-            #         # klawisz r cos robi
+
         player.loop()
         handle_movement(player)
         draw_window(window, background, background_image, player)
