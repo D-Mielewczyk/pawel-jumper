@@ -12,6 +12,7 @@ pygame.display.set_caption("Paweł Jumper")
 FPS = 60
 PLAYER_VEL = 5
 GRAVITY = 1
+DELAY_ANIMATION = 5
 
 def rotate(sprite):
     return pygame.transform.flip(sprite, True, False)
@@ -56,7 +57,7 @@ class Player(Object):
         self.direction = "right"
         self.animation = 0
         self.fall_count = 0
-        self.sprites = load_sprites("Main characters/Ninja Frog", 32, 32, True)
+        self.SPRITES = load_sprites("Main characters/Ninja Frog", 32, 32, True)
 
     def go_left(self, velocity):
         self.x_vel = -velocity
@@ -70,16 +71,28 @@ class Player(Object):
             self.direction = "right"
             self.animation = 0
 
+    def set_sprite(self):
+        sprite = "Idle (32x32)"
+        if self.x_vel != 0:
+            sprite = "Run (32x32)"
+
+        sprite_name = f"{sprite}_{self.direction}" 
+        sprites = self.SPRITES[sprite_name]
+        index = (self.animation // DELAY_ANIMATION) % len(sprites)
+
+        self.sprite = sprites[index]
+        self.animation += 1
+
     def loop(self):
-        self.y_vel += min(1, (self.fall_count / FPS) * GRAVITY)
+        # self.y_vel += min(1, (self.fall_count / FPS) * GRAVITY)
         self.rect.x += self.x_vel
         self.rect.y += self.y_vel
 
         self.fall_count += 1
+        self.set_sprite()
 
 
     def draw(self, window):
-        self.sprite = self.sprites["Idle (32x32)_" + self.direction][0]
         window.blit(self.sprite, (self.rect.x, self.rect.y))
 
 
