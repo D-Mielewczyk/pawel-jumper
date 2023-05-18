@@ -23,7 +23,7 @@ class Platform(Object):
         self.sprite.blit(load_platform(width, height), (0, 0))
         self.mask = pygame.mask.from_surface(self.sprite)
 
-    def gen_platforms(self, max_height, platforms):
+    def gen_platforms(self, min_height, max_height, platforms):
         while Platform.next_platform_height >= max_height:
             platforms.append(
                 Platform(
@@ -32,6 +32,10 @@ class Platform(Object):
                 )
             )
             Platform.next_platform_height -= randint(0, 625)
+
+        for index, platform in enumerate(platforms):
+            if platform.rect.top < min_height:
+                platforms.pop(index)
 
 
 # 46 4
