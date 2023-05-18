@@ -2,7 +2,7 @@ import os
 import pygame
 
 from player import Player
-from platform import Platform
+from platform_cls import Platform
 from utils import FPS, GRAVITY, WIDTH, HEIGHT
 
 pygame.init()
@@ -11,9 +11,9 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
 pygame.display.set_caption("Paweł Jumper")
 
-PLAYER_VEL = 5
-SCROLL_AREA_HEIGHT = 200
 
+PLAYER_VEL = 9
+SCROLL_AREA_HEIGHT = 300
 
 
 def get_background(color):
@@ -29,7 +29,9 @@ def get_background(color):
     return tiles, image
 
 
-def draw_window(window, background, background_image, offset_y, player, *objects):
+def draw_window(
+    window, background, background_image, offset_y, player, *objects
+):
     for tile in background:
         window.blit(background_image, tile)
 
@@ -41,8 +43,11 @@ def draw_window(window, background, background_image, offset_y, player, *objects
 
     pygame.display.update()
 
+
 def handle_vert_collision(player, *objects):
-    collided = [obj for obj in objects if pygame.sprite.collide_mask(player, obj)]
+    collided = [
+        obj for obj in objects if pygame.sprite.collide_mask(player, obj)
+    ]
 
     for obj in collided:
         if player.y_vel > 0:
@@ -63,30 +68,39 @@ def handle_movement(player, *objects):
 
     handle_vert_collision(player, *objects)
 
-def handle_camera(player, offset_y):
-    if (player.rect.top + offset_y <= SCROLL_AREA_HEIGHT and player.y_vel < 0):
-            offset_y += player.y_vel
-            player.dead_height += player.y_vel
+
+def handle_camera(player, offset_y, platforms):
+    if player.rect.top <= SCROLL_AREA_HEIGHT + offset_y and player.y_vel < 0:
+        offset_y += player.y_vel
+        player.dead_height += player.y_vel
+    platforms[-1].gen_platforms(offset_y, platforms)
     return offset_y
+
 
 def game_over():
     print("GAME OVER")
     pygame.time.wait(500)
     exit()
 
+
 def check_loose(player):
     if player.rect.top >= player.dead_height:
         game_over()
 
+
 def game_loop(window):
     clock = pygame.time.Clock()
 
-    player = Player(100, 100, 50, 50)
-    platforms = [Platform(i, HEIGHT - 75) for i in range(0, WIDTH + 1, 240)] + [Platform(200, 400), Platform(400, 200)]
+    offset_y = 0
+
+    player = Player(100, 900, 50, 50)
+
+    pygame.display.set_icon(player.SPRITES["Idle (32x32)_right"][0])
+
+    platforms = [Platform(i, HEIGHT - 75) for i in range(0, WIDTH, 96)]
+    platforms[-1].gen_platforms(-offset_y, platforms)
 
     background, background_image = get_background("Blue.png")
-
-    offset_y = 0
 
     run = True
     while run:
@@ -101,10 +115,11 @@ def game_loop(window):
 
         player.loop()
         handle_movement(player, *platforms)
-        draw_window(window, background, background_image, offset_y, player, *platforms)
-        offset_y = handle_camera(player, offset_y)
+        draw_window(
+            window, background, background_image, offset_y, player, *platforms
+        )
+        offset_y = handle_camera(player, offset_y, platforms)
         check_loose(player)
-
 
     pygame.quit()
     quit()
