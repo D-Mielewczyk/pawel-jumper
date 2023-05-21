@@ -7,6 +7,11 @@ from utils import FPS, GRAVITY, WIDTH, HEIGHT
 
 pygame.init()
 
+pygame.font.init()
+FONT_NAME = "04B_30__.TTF"
+GAME_FONT_BIG = pygame.font.Font(FONT_NAME, 40)
+GAME_FONT_SMALL = pygame.font.Font(FONT_NAME, 24)
+
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
 pygame.display.set_caption("Paweł Jumper")
@@ -77,15 +82,33 @@ def handle_camera(player, offset_y, platforms):
     return offset_y
 
 
-def game_over():
-    print("GAME OVER")
-    pygame.time.wait(500)
+def game_over(window):
+    #Draw texts
+    text = GAME_FONT_BIG.render("GAME OVER", True, (0, 0, 0))
+    text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/4))
+    window.blit(text, text_rect)
+    text = GAME_FONT_SMALL.render("Press 'space' to play again", True, (0, 0, 0))
+    text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/4 + 50))
+    window.blit(text, text_rect)
+    text = GAME_FONT_SMALL.render("'x' to exit", True, (0, 0, 0))
+    text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/4 + 80))
+    window.blit(text, text_rect)
+    pygame.display.update()
+    #Draw texts
+
+    while(True):
+        pygame.event.get()
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+            game_loop(window)
+        if keys[pygame.K_x]:
+            break
     exit()
+    
 
-
-def check_loose(player):
+def check_loose(player, window):
     if player.rect.top >= player.dead_height:
-        game_over()
+        game_over(window)
 
 
 def game_loop(window):
@@ -118,8 +141,9 @@ def game_loop(window):
         draw_window(
             window, background, background_image, offset_y, player, *platforms
         )
+        
         offset_y = handle_camera(player, offset_y, platforms)
-        check_loose(player)
+        check_loose(player, window)
 
     pygame.quit()
     quit()
