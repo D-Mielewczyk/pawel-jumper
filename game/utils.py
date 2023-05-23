@@ -3,9 +3,15 @@ import pygame
 
 pygame.init()
 
+os.chdir("..")
+
 WIDTH, HEIGHT = 600, 1000
 FPS = 60
 GRAVITY = 1
+
+FONT_NAME = "assets/04B_30__.TTF"
+GAME_FONT_BIG = pygame.font.Font(FONT_NAME, 40)
+GAME_FONT_SMALL = pygame.font.Font(FONT_NAME, 24)
 
 # We need to mock window here so .convert_alpha() works
 pygame.display.set_mode((1000, 1000))
@@ -16,7 +22,6 @@ def rotate(sprite):
 
 
 def load_sprites(path, width, height, do_rotate=False):
-    os.chdir("..")
     path = f"assets/{path}"
     images = [
         f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))

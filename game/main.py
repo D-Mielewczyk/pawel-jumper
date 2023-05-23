@@ -1,22 +1,17 @@
-import os
 import pygame
 
 from player import Player
 from platform_cls import Platform
-from utils import FPS, GRAVITY, WIDTH, HEIGHT
+from utils import FPS, WIDTH, HEIGHT, GAME_FONT_BIG, GAME_FONT_SMALL
 from score import Score
 
 pygame.init()
 
 pygame.font.init()
-FONT_NAME = "04B_30__.TTF"
-GAME_FONT_BIG = pygame.font.Font(FONT_NAME, 40)
-GAME_FONT_SMALL = pygame.font.Font(FONT_NAME, 24)
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
 pygame.display.set_caption("Paweł Jumper")
-
 
 PLAYER_VEL = 9
 SCROLL_AREA_HEIGHT = 300
@@ -86,7 +81,6 @@ def handle_camera(player, offset_y, platforms):
 
 def game_over(window, score):
     score.load_best_score()
-    texts = []
 
     #Draw texts
     if score.new_best_score_flag == True:

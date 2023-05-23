@@ -1,15 +1,8 @@
-import pygame
-
-from utils import WIDTH, HEIGHT
-
-FONT_NAME = "04B_30__.TTF"
-GAME_FONT_BIG = pygame.font.Font(FONT_NAME, 40)
+from utils import WIDTH, GAME_FONT_BIG
 
 class Score():
     def __init__(self):
-        pygame.font.init()
-
-        self.current_score = int(0)
+        self.current_score = 0
         self.best_score = 0
         self.new_best_score_flag = False
         
