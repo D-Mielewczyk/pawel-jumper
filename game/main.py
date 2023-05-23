@@ -165,7 +165,7 @@ def game_loop(window):
             run = False
             break
 
-    game_over(window)
+    game_over(window, score)
 
     pygame.quit()
     quit()
