@@ -75,37 +75,41 @@ def handle_camera(player, offset_y, platforms):
     if player.rect.top <= SCROLL_AREA_HEIGHT + offset_y and player.y_vel < 0:
         offset_y += player.y_vel
         player.dead_height += player.y_vel
-    platforms[-1].gen_platforms(offset_y, platforms)
+    Platform.gen_platforms(player.dead_height, offset_y, platforms)
     return offset_y
-
 
 
 def game_over(window, score):
     score.load_best_score()
 
-    #Draw texts
+    # Draw texts
     if score.new_best_score_flag == True:
-        text = GAME_FONT_BIG.render("New best score: " + str(int(score.best_score)), True, (200, 0, 0))
+        text = GAME_FONT_BIG.render(
+            "New best score: " + str(int(score.best_score)), True, (200, 0, 0)
+        )
     else:
-        text = GAME_FONT_SMALL.render("Best score: " + str(int(score.best_score)), True, (0, 0, 0))
-    text_rect = text.get_rect(center=(WIDTH/2, 110))
-    window.blit(text, text_rect)    
+        text = GAME_FONT_SMALL.render(
+            "Best score: " + str(int(score.best_score)), True, (0, 0, 0)
+        )
+    text_rect = text.get_rect(center=(WIDTH / 2, 110))
+    window.blit(text, text_rect)
 
     text = GAME_FONT_BIG.render("GAME OVER", True, (0, 0, 0))
-    text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/3))
+    text_rect = text.get_rect(center=(WIDTH / 2, HEIGHT / 3))
     window.blit(text, text_rect)
-    text = GAME_FONT_SMALL.render("Press 'space' to play again", True, (0, 0, 0))
-    text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/3 + 50))
+    text = GAME_FONT_SMALL.render(
+        "Press 'space' to play again", True, (0, 0, 0)
+    )
+    text_rect = text.get_rect(center=(WIDTH / 2, HEIGHT / 3 + 50))
     window.blit(text, text_rect)
     text = GAME_FONT_SMALL.render("'x' to exit", True, (0, 0, 0))
-    text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/3 + 80))
+    text_rect = text.get_rect(center=(WIDTH / 2, HEIGHT / 3 + 80))
     window.blit(text, text_rect)
     pygame.display.update()
-    #Draw texts
-
+    # Draw texts
 
     exit_game = False
-    while (not exit_game):
+    while not exit_game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit_game = True
@@ -116,7 +120,7 @@ def game_over(window, score):
                     break
                 if event.key == pygame.K_SPACE:
                     game_loop(window)
-    
+
 
 def check_loose(player):
     return player.rect.top >= player.dead_height
@@ -133,10 +137,10 @@ def game_loop(window):
 
     pygame.display.set_icon(player.SPRITES["Idle (32x32)_right"][0])
 
-
-    platforms = [Platform(i, HEIGHT - 75) for i in range(0, WIDTH, 96)] #generate floor
-    platforms[-1].gen_platforms(offset_y, platforms)
-
+    platforms = [
+        Platform(i, HEIGHT - 75) for i in range(0, WIDTH, 96)
+    ]  # generate floor
+    Platform.gen_platforms(player.dead_height, offset_y, platforms)
 
     background, background_image = get_background("Blue.png")
 
@@ -154,9 +158,15 @@ def game_loop(window):
         player.loop()
         handle_movement(player, *platforms)
         draw_window(
-            window, background, background_image, offset_y, player, score, *platforms
+            window,
+            background,
+            background_image,
+            offset_y,
+            player,
+            score,
+            *platforms,
         )
-        
+
         offset_y = handle_camera(player, offset_y, platforms)
 
         score.update_current_score(-offset_y)
