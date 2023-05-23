@@ -31,7 +31,6 @@ class Platform(Object):
                     Platform.next_platform_height,
                 )
             )
-            print(Platform.next_platform_height)
             Platform.next_platform_height -= randint(0, 625)
 
     def reset_platform_height():

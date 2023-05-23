@@ -4,6 +4,7 @@ import pygame
 from player import Player
 from platform_cls import Platform
 from utils import FPS, GRAVITY, WIDTH, HEIGHT
+from score import Score
 
 pygame.init()
 
@@ -35,7 +36,7 @@ def get_background(color):
 
 
 def draw_window(
-    window, background, background_image, offset_y, player, *objects
+    window, background, background_image, offset_y, player, score, *objects
 ):
     for tile in background:
         window.blit(background_image, tile)
@@ -43,6 +44,7 @@ def draw_window(
     for obj in objects:
         obj.draw(window, offset_y)
 
+    score.draw(window)
     # Allways draw player last so he is on top
     player.draw(window, offset_y)
 
@@ -82,27 +84,30 @@ def handle_camera(player, offset_y, platforms):
     return offset_y
 
 
-def game_over(window):
+def game_over(window, score):
+    score.load_best_score()
+    texts = []
+
     #Draw texts
+    if score.new_best_score_flag == True:
+        text = GAME_FONT_BIG.render("New best score: " + str(int(score.best_score)), True, (200, 0, 0))
+    else:
+        text = GAME_FONT_SMALL.render("Best score: " + str(int(score.best_score)), True, (0, 0, 0))
+    text_rect = text.get_rect(center=(WIDTH/2, 110))
+    window.blit(text, text_rect)    
+
     text = GAME_FONT_BIG.render("GAME OVER", True, (0, 0, 0))
-    text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/4))
+    text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/3))
     window.blit(text, text_rect)
     text = GAME_FONT_SMALL.render("Press 'space' to play again", True, (0, 0, 0))
-    text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/4 + 50))
+    text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/3 + 50))
     window.blit(text, text_rect)
     text = GAME_FONT_SMALL.render("'x' to exit", True, (0, 0, 0))
-    text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/4 + 80))
+    text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/3 + 80))
     window.blit(text, text_rect)
     pygame.display.update()
     #Draw texts
 
-    # while(True):
-    #     event = pygame.event.get()
-    #     keys = pygame.key.get_pressed()
-    #     if keys[pygame.K_SPACE]:
-    #         game_loop(window)
-    #     if keys[pygame.K_x] or event == pygame.QUIT:
-    #        break     
     exit_game = False
     while (not exit_game):
         for event in pygame.event.get():
@@ -115,7 +120,6 @@ def game_over(window):
                     break
                 if event.key == pygame.K_SPACE:
                     game_loop(window)
-    #exit()
     
 
 def check_loose(player):
@@ -126,6 +130,8 @@ def check_loose(player):
 
 def game_loop(window):
     clock = pygame.time.Clock()
+
+    score = Score()
 
     offset_y = 0
     Platform.reset_platform_height()
@@ -154,15 +160,18 @@ def game_loop(window):
         player.loop()
         handle_movement(player, *platforms)
         draw_window(
-            window, background, background_image, offset_y, player, *platforms
+            window, background, background_image, offset_y, player, score, *platforms
         )
         
         offset_y = handle_camera(player, offset_y, platforms)
+        score.update_current_score(-offset_y)
+
+
         if check_loose(player) == True:
             run = False
             break
 
-    game_over(window)
+    game_over(window, score)
     pygame.quit()
     quit()
 
