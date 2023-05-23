@@ -79,6 +79,7 @@ def handle_camera(player, offset_y, platforms):
     return offset_y
 
 
+
 def game_over(window, score):
     score.load_best_score()
 
@@ -102,6 +103,7 @@ def game_over(window, score):
     pygame.display.update()
     #Draw texts
 
+
     exit_game = False
     while (not exit_game):
         for event in pygame.event.get():
@@ -117,9 +119,7 @@ def game_over(window, score):
     
 
 def check_loose(player):
-    if player.rect.top >= player.dead_height:
-        return True
-    return False
+    return player.rect.top >= player.dead_height
 
 
 def game_loop(window):
@@ -158,14 +158,15 @@ def game_loop(window):
         )
         
         offset_y = handle_camera(player, offset_y, platforms)
+
         score.update_current_score(-offset_y)
 
-
-        if check_loose(player) == True:
+        if check_loose(player):
             run = False
             break
 
-    game_over(window, score)
+    game_over(window)
+
     pygame.quit()
     quit()
 

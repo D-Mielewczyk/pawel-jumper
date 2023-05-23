@@ -3,6 +3,7 @@ import pygame
 
 pygame.init()
 
+
 os.chdir("..")
 
 WIDTH, HEIGHT = 600, 1000
