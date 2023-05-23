@@ -95,14 +95,7 @@ def game_over(window):
     window.blit(text, text_rect)
     pygame.display.update()
     #Draw texts
-
-    # while(True):
-    #     event = pygame.event.get()
-    #     keys = pygame.key.get_pressed()
-    #     if keys[pygame.K_SPACE]:
-    #         game_loop(window)
-    #     if keys[pygame.K_x] or event == pygame.QUIT:
-    #        break     
+   
     exit_game = False
     while (not exit_game):
         for event in pygame.event.get():
@@ -115,13 +108,11 @@ def game_over(window):
                     break
                 if event.key == pygame.K_SPACE:
                     game_loop(window)
-    #exit()
     
 
 def check_loose(player):
-    if player.rect.top >= player.dead_height:
-        return True
-    return False
+    return player.rect.top >= player.dead_height
+
 
 
 def game_loop(window):
@@ -158,7 +149,7 @@ def game_loop(window):
         )
         
         offset_y = handle_camera(player, offset_y, platforms)
-        if check_loose(player) == True:
+        if check_loose(player):
             run = False
             break
 
