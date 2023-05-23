@@ -75,7 +75,7 @@ def handle_camera(player, offset_y, platforms):
     if player.rect.top <= SCROLL_AREA_HEIGHT + offset_y and player.y_vel < 0:
         offset_y += player.y_vel
         player.dead_height += player.y_vel
-    platforms[-1].gen_platforms(offset_y, platforms)
+    Platform.gen_platforms(player.dead_height, offset_y, platforms)
     return offset_y
 
 
@@ -135,7 +135,7 @@ def game_loop(window):
 
 
     platforms = [Platform(i, HEIGHT - 75) for i in range(0, WIDTH, 96)] #generate floor
-    platforms[-1].gen_platforms(offset_y, platforms)
+    Platform.gen_platforms(player.dead_height, offset_y, platforms)
 
 
     background, background_image = get_background("Blue.png")
