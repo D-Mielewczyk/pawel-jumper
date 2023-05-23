@@ -75,7 +75,9 @@ def handle_camera(player, offset_y, platforms, diff_level, platform_type):
     if player.rect.top <= SCROLL_AREA_HEIGHT + offset_y and player.y_vel < 0:
         offset_y += player.y_vel
         player.dead_height += player.y_vel
-    Platform.gen_platforms(player.dead_height, offset_y, platforms, diff_level, platform_type)
+    Platform.gen_platforms(
+        player.dead_height, offset_y, platforms, diff_level, platform_type
+    )
     return offset_y
 
 
@@ -138,9 +140,12 @@ def game_loop(window):
     pygame.display.set_icon(player.SPRITES["Idle (32x32)_right"][0])
 
     platforms = [
-        Platform(i, HEIGHT - 75, score.current_score, "basic") for i in range(0, WIDTH, 96)
+        Platform(i, HEIGHT - 75, score.current_score, "basic")
+        for i in range(0, WIDTH, 96)
     ]  # generate floor
-    Platform.gen_platforms(player.dead_height, offset_y, platforms, score.current_score, "basic")
+    Platform.gen_platforms(
+        player.dead_height, offset_y, platforms, score.current_score, "basic"
+    )
 
     background, background_image = get_background("Blue.png")
 
@@ -167,7 +172,9 @@ def game_loop(window):
             *platforms,
         )
 
-        offset_y = handle_camera(player, offset_y, platforms, score.current_score, "basic")
+        offset_y = handle_camera(
+            player, offset_y, platforms, score.current_score, "basic"
+        )
 
         score.update_current_score(-offset_y)
 
