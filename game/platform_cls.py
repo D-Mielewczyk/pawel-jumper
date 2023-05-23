@@ -33,12 +33,13 @@ class Platform(Object):
                 )
             )
             Platform.next_platform_height -= randint(0, 625)
-        
+
         for index, platform in enumerate(platforms):
             if platform.rect.top > min_height:
                 platforms.pop(index)
 
     def reset_platform_height():
         Platform.next_platform_height = HEIGHT - randint(90, 700)
+
 
 # 46 4
