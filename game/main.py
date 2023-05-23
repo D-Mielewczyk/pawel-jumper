@@ -7,6 +7,11 @@ from utils import FPS, GRAVITY, WIDTH, HEIGHT
 
 pygame.init()
 
+pygame.font.init()
+FONT_NAME = "04B_30__.TTF"
+GAME_FONT_BIG = pygame.font.Font(FONT_NAME, 40)
+GAME_FONT_SMALL = pygame.font.Font(FONT_NAME, 24)
+
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
 pygame.display.set_caption("Paweł Jumper")
@@ -77,28 +82,52 @@ def handle_camera(player, offset_y, platforms):
     return offset_y
 
 
-def game_over():
-    print("GAME OVER")
-    pygame.time.wait(500)
-    exit()
-
+def game_over(window):
+    #Draw texts
+    text = GAME_FONT_BIG.render("GAME OVER", True, (0, 0, 0))
+    text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/4))
+    window.blit(text, text_rect)
+    text = GAME_FONT_SMALL.render("Press 'space' to play again", True, (0, 0, 0))
+    text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/4 + 50))
+    window.blit(text, text_rect)
+    text = GAME_FONT_SMALL.render("'x' to exit", True, (0, 0, 0))
+    text_rect = text.get_rect(center=(WIDTH/2, HEIGHT/4 + 80))
+    window.blit(text, text_rect)
+    pygame.display.update()
+    #Draw texts
+   
+    exit_game = False
+    while (not exit_game):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit_game = True
+                break
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_x:
+                    exit_game = True
+                    break
+                if event.key == pygame.K_SPACE:
+                    game_loop(window)
+    
 
 def check_loose(player):
-    if player.rect.top >= player.dead_height:
-        game_over()
+    return player.rect.top >= player.dead_height
+
 
 
 def game_loop(window):
     clock = pygame.time.Clock()
 
     offset_y = 0
-
+    Platform.reset_platform_height()
     player = Player(100, 900, 50, 50)
 
     pygame.display.set_icon(player.SPRITES["Idle (32x32)_right"][0])
 
-    platforms = [Platform(i, HEIGHT - 75) for i in range(0, WIDTH, 96)]
-    platforms[-1].gen_platforms(-offset_y, platforms)
+
+    platforms = [Platform(i, HEIGHT - 75) for i in range(0, WIDTH, 96)] #generate floor
+    platforms[-1].gen_platforms(offset_y, platforms)
+
 
     background, background_image = get_background("Blue.png")
 
@@ -118,9 +147,13 @@ def game_loop(window):
         draw_window(
             window, background, background_image, offset_y, player, *platforms
         )
+        
         offset_y = handle_camera(player, offset_y, platforms)
-        check_loose(player)
+        if check_loose(player):
+            run = False
+            break
 
+    game_over(window)
     pygame.quit()
     quit()
 
