@@ -96,32 +96,47 @@ def game_over(window):
     pygame.display.update()
     #Draw texts
 
-    while(True):
-        pygame.event.get()
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE]:
-            game_loop(window)
-        if keys[pygame.K_x]:
-            break
-    exit()
+    # while(True):
+    #     event = pygame.event.get()
+    #     keys = pygame.key.get_pressed()
+    #     if keys[pygame.K_SPACE]:
+    #         game_loop(window)
+    #     if keys[pygame.K_x] or event == pygame.QUIT:
+    #        break     
+    exit_game = False
+    while (not exit_game):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit_game = True
+                break
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_x:
+                    exit_game = True
+                    break
+                if event.key == pygame.K_SPACE:
+                    game_loop(window)
+    #exit()
     
 
-def check_loose(player, window):
+def check_loose(player):
     if player.rect.top >= player.dead_height:
-        game_over(window)
+        return True
+    return False
 
 
 def game_loop(window):
     clock = pygame.time.Clock()
 
     offset_y = 0
-
+    Platform.reset_platform_height()
     player = Player(100, 900, 50, 50)
 
     pygame.display.set_icon(player.SPRITES["Idle (32x32)_right"][0])
 
-    platforms = [Platform(i, HEIGHT - 75) for i in range(0, WIDTH, 96)]
-    platforms[-1].gen_platforms(-offset_y, platforms)
+
+    platforms = [Platform(i, HEIGHT - 75) for i in range(0, WIDTH, 96)] #generate floor
+    platforms[-1].gen_platforms(offset_y, platforms)
+
 
     background, background_image = get_background("Blue.png")
 
@@ -143,8 +158,11 @@ def game_loop(window):
         )
         
         offset_y = handle_camera(player, offset_y, platforms)
-        check_loose(player, window)
+        if check_loose(player) == True:
+            run = False
+            break
 
+    game_over(window)
     pygame.quit()
     quit()
 

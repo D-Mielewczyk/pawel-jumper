@@ -24,6 +24,8 @@ class Platform(Object):
         self.mask = pygame.mask.from_surface(self.sprite)
 
     def gen_platforms(self, max_height, platforms):
+        print("next", Platform.next_platform_height)
+        print("max", max_height)
         while Platform.next_platform_height >= max_height:
             platforms.append(
                 Platform(
@@ -31,7 +33,10 @@ class Platform(Object):
                     Platform.next_platform_height,
                 )
             )
+            print(Platform.next_platform_height)
             Platform.next_platform_height -= randint(0, 625)
 
+    def reset_platform_height():
+        Platform.next_platform_height = HEIGHT - randint(90, 700)
 
 # 46 4
