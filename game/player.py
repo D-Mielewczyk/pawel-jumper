@@ -7,7 +7,7 @@ from sound import Sound
 
 
 class Player(Object):
-    SPRITES = load_sprites(os.path.join('Main characters', 'Ninja Frog'), 32, 32, True)
+    SPRITES = load_sprites(os.path.join("Main characters", "Ninja Frog"), 32, 32, True)
     DELAY_ANIMATION = 3
 
     def __init__(self, x, y, width, height):

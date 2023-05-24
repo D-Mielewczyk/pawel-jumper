@@ -29,7 +29,9 @@ class Platform(Object):
         else:
             scaled_width = 96
         original_image = load_platform(width, height)
-        scaled_image = pygame.transform.scale(original_image, (scaled_width * 2, height * 2))
+        scaled_image = pygame.transform.scale(
+            original_image, (scaled_width * 2, height * 2)
+        )
         self.sprite.blit(scaled_image, (0, 0))
         self.mask = pygame.mask.from_surface(self.sprite)
 
@@ -37,7 +39,12 @@ class Platform(Object):
     def gen_platforms(min_height, max_height, platforms, diff_level, type):
         while Platform.next_platform_height >= max_height:
             platforms.append(
-                Platform(randint(0, WIDTH - 96), Platform.next_platform_height, diff_level, type)
+                Platform(
+                    randint(0, WIDTH - 96),
+                    Platform.next_platform_height,
+                    diff_level,
+                    type,
+                )
             )
             Platform.next_platform_height -= randint(min(0 + diff_level * 7, 500), 625)
 
