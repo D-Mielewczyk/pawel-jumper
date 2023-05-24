@@ -3,6 +3,7 @@ import os
 
 from object import Object
 from utils import load_sprites, FPS, GRAVITY, HEIGHT
+from sound import Sound
 
 
 class Player(Object):
@@ -17,6 +18,7 @@ class Player(Object):
         self.mask = None
         self.jumps = 0
         self.dead_height = HEIGHT
+        self.sounds = Sound()
 
     def go_left(self, velocity):
         self.x_vel = -velocity
@@ -34,6 +36,7 @@ class Player(Object):
         self.y_vel = -GRAVITY * 12
         self.animation_count = 0
         self.jumps += 1
+        self.sounds.jump()
         if self.jumps == 1:
             self.fall_count = 0
         elif self.jumps == 2:
