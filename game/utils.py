@@ -3,14 +3,11 @@ import pygame
 
 pygame.init()
 
-
-os.chdir("..")
-
 WIDTH, HEIGHT = 600, 1000
 FPS = 60
 GRAVITY = 1
 
-FONT_NAME = "assets/04B_30__.TTF"
+FONT_NAME = os.path.join('assets', '04B_30__.TTF')
 GAME_FONT_BIG = pygame.font.Font(FONT_NAME, 40)
 GAME_FONT_SMALL = pygame.font.Font(FONT_NAME, 24)
 
@@ -23,7 +20,9 @@ def rotate(sprite):
 
 
 def load_sprites(path, width, height, do_rotate=False):
-    path = f"assets/{path}"
+    print(path)
+    path = os.path.join('assets', path)
+    print(path)
     images = [
         f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))
     ]

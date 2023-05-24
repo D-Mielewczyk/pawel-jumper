@@ -1,11 +1,12 @@
 import pygame
+import os
 
 from object import Object
 from utils import load_sprites, FPS, GRAVITY, HEIGHT
 
 
 class Player(Object):
-    SPRITES = load_sprites("Main characters/Ninja Frog", 32, 32, True)
+    SPRITES = load_sprites(os.path.join('Main character', 'Ninja Frog'), 32, 32, True)
     DELAY_ANIMATION = 3
 
     def __init__(self, x, y, width, height):

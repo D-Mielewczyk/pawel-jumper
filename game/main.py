@@ -1,4 +1,5 @@
 import pygame
+import os
 
 from player import Player
 from platform_cls import Platform
@@ -6,8 +7,8 @@ from utils import FPS, WIDTH, HEIGHT, GAME_FONT_BIG, GAME_FONT_SMALL
 from score import Score
 
 pygame.init()
-
 pygame.font.init()
+pygame.mixer.init()
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
@@ -18,7 +19,7 @@ SCROLL_AREA_HEIGHT = 300
 
 
 def get_background(color):
-    image = pygame.image.load(f"assets/Background/{color}")
+    image = pygame.image.load(os.path.join('assets', 'Background', color))
     _, _, width, height = image.get_rect()
     tiles = []
 
