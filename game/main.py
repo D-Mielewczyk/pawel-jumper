@@ -5,6 +5,7 @@ from player import Player
 from platform_cls import Platform
 from utils import FPS, WIDTH, HEIGHT, GAME_FONT_BIG, GAME_FONT_SMALL
 from score import Score
+from spike import Spike
 
 pygame.init()
 pygame.font.init()
@@ -167,6 +168,7 @@ def game_loop(window):
             player,
             score,
             *platforms,
+            *spikes
         )
 
         offset_y = handle_camera(

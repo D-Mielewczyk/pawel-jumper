@@ -25,9 +25,9 @@ class Platform(Object):
         self.type = type
 
         if self.type == "basic":
-            scaled_width = max(96 - 8 * (diff_level // 15), 48)
+            scaled_width = max(Platform.width - 8 * (diff_level // 15), 48)
         else:
-            scaled_width = 96
+            scaled_width = Platform.width
         original_image = load_platform(width, height)
         scaled_image = pygame.transform.scale(
             original_image, (scaled_width * 2, height * 2)
