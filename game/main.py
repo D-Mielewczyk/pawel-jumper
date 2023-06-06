@@ -62,6 +62,7 @@ def handle_vert_collision(player, objects):
             player.landed()
             if obj.type == "tramp":
                 player.y_vel = -25
+                obj.tramp_loop()
             if obj.type == "diss":
                 Platform.disappear(objects, diss_index)
 
@@ -137,12 +138,18 @@ def check_loose(player):
 
 def platform_type_roll(diff_level):
     roll = randint (min(diff_level, 50), 100)
-    if 0 <= roll < 70:
+    # if 0 <= roll < 70:
+    #     return "basic"
+    # elif 70 <= roll <80:
+    #     return "tramp"
+    # elif 80 <= roll <101:
+    #     return "diss"
+    if 0 <= roll < 20:
         return "basic"
-    elif 70 <= roll <80:
+    elif 20 <= roll <90:
         return "tramp"
-    elif 80 <= roll <101:
-        return "diss"
+    elif 90 <= roll <101:
+        return "diss"    
 
 
 def game_loop(window):
