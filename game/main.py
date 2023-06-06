@@ -1,5 +1,6 @@
 import pygame
 import os
+from random import randint
 
 from player import Player
 from platform_cls import Platform
@@ -47,13 +48,24 @@ def draw_window(
     pygame.display.update()
 
 
-def handle_vert_collision(player, *objects):
-    collided = [obj for obj in objects if pygame.sprite.collide_mask(player, obj)]
+def handle_vert_collision(player, objects):
+    collided = []
+    diss_index = 0
+    for index, obj in enumerate(objects):
+        if pygame.sprite.collide_mask(player, obj):
+            collided.append(obj)
+            if obj.type == "diss":
+                diss_index = index
 
     for obj in collided:
         if player.y_vel > 0:
             player.rect.bottom = obj.rect.top
             player.landed()
+        if obj.type == "tramp":
+            player.y_vel = -25
+            obj.tramp_loop()
+        if obj.type == "diss":
+            Platform.disappear(objects, diss_index)
 
     return collided
 
@@ -124,6 +136,20 @@ def game_over(window, score):
 def check_loose(player):
     return player.rect.top >= player.dead_height
 
+def platform_type_roll(diff_level):
+    roll = randint (min(diff_level, 50), 100)
+    # if 0 <= roll < 70:
+    #     return "basic"
+    # elif 70 <= roll <80:
+    #     return "tramp"
+    # elif 80 <= roll <101:
+    #     return "diss"
+    if 0 <= roll < 20:
+        return "basic"
+    elif 20 <= roll <90:
+        return "tramp"
+    elif 90 <= roll <101:
+        return "diss"    
 
 def game_loop(window):
     clock = pygame.time.Clock()
@@ -158,7 +184,7 @@ def game_loop(window):
                     player.jump()
 
         player.loop()
-        handle_movement(player, *platforms)
+        handle_movement(player, platforms)
         draw_window(
             window,
             background,
@@ -170,7 +196,7 @@ def game_loop(window):
         )
 
         offset_y = handle_camera(
-            player, offset_y, platforms, score.current_score, "basic"
+            player, offset_y, platforms, score.current_score, platform_type_roll(score.current_score)
         )
 
         score.update_current_score(-offset_y)
