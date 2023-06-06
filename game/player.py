@@ -1,11 +1,13 @@
 import pygame
+import os
 
 from object import Object
 from utils import load_sprites, FPS, GRAVITY, HEIGHT
+from sound import Sound
 
 
 class Player(Object):
-    SPRITES = load_sprites("Main characters/Ninja Frog", 32, 32, True)
+    SPRITES = load_sprites(os.path.join("Main characters", "Ninja Frog"), 32, 32, True)
     DELAY_ANIMATION = 3
 
     def __init__(self, x, y, width, height):
@@ -16,6 +18,7 @@ class Player(Object):
         self.mask = None
         self.jumps = 0
         self.dead_height = HEIGHT
+        self.sounds = Sound()
 
     def go_left(self, velocity):
         self.x_vel = -velocity
@@ -33,6 +36,7 @@ class Player(Object):
         self.y_vel = -GRAVITY * 12
         self.animation_count = 0
         self.jumps += 1
+        self.sounds.jump()
         if self.jumps == 1:
             self.fall_count = 0
         elif self.jumps == 2:
