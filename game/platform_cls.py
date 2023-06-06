@@ -9,11 +9,11 @@ from object import Object
 
 def get_random_platform_type(diff_level):
     roll = randint(min(diff_level, 50), 100)
-    if diff_level == 0 or roll <60:
+    if diff_level == 0 or roll < 60:
         return "basic"
-    elif 60 <= roll < 90:
+    elif roll < 90:
         return "tramp"
-    elif 90 <= roll < 100:
+    else:
         return "diss"
 
 
@@ -35,7 +35,7 @@ def load_platform(self, width, height):
 
 
 class Platform(Object):
-    next_platform_height = HEIGHT - randint(90, 700)
+    next_platform_height = HEIGHT - randint(90, 500)
     width = 96
     TRAMP_SPRITE = load_sprites(os.path.join("Traps", "Trampoline"), 28, 28)
     DELAY_ANIMATION = 3
@@ -60,7 +60,7 @@ class Platform(Object):
 
         scaled_width = width
         if self.type == "basic":
-            scaled_width = max(96 - 8 * (diff_level // 15), 48)
+            scaled_width = max(96 - diff_level, 48)
 
         original_image = load_platform(self, width, height)
         scaled_image = pygame.transform.scale(

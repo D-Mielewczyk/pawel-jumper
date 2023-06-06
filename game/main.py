@@ -1,5 +1,7 @@
-import pygame
 import os
+os.environ['SDL_VIDEO_WINDOW_POS'] = "0,30"
+
+import pygame
 from random import randint
 
 from player import Player
@@ -142,7 +144,7 @@ def game_loop(window):
 
     offset_y = 0
     Platform.reset_platform_height()
-    player = Player(100, 900, 50, 50)
+    player = Player(WIDTH/2-50, HEIGHT-200  , 50, 50)
 
     pygame.display.set_icon(player.SPRITES["Idle (32x32)_right"][0])
 
