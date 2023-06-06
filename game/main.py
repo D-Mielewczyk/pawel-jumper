@@ -1,5 +1,6 @@
 import pygame
 import os
+from random import randint
 
 from player import Player
 from platform_cls import Platform
@@ -47,13 +48,24 @@ def draw_window(
     pygame.display.update()
 
 
-def handle_vert_collision(player, *objects):
-    collided = [obj for obj in objects if pygame.sprite.collide_mask(player, obj)]
+def handle_vert_collision(player, objects):
+    collided = []
+    diss_index = 0
+    for index, obj in enumerate(objects):
+        if pygame.sprite.collide_mask(player, obj):
+            collided.append(obj)
+            if obj.type == "diss":
+                diss_index = index
 
     for obj in collided:
         if player.y_vel > 0:
             player.rect.bottom = obj.rect.top
             player.landed()
+            if obj.type == "diss":
+                Platform.disappear(objects, diss_index)
+        if obj.type == "tramp":
+            player.y_vel = -25
+            player.sounds.tramp()
 
     return collided
 
@@ -70,13 +82,11 @@ def handle_movement(player, *objects):
     handle_vert_collision(player, *objects)
 
 
-def handle_camera(player, offset_y, platforms, diff_level, platform_type):
+def handle_camera(player, offset_y, platforms, diff_level):
     if player.rect.top <= SCROLL_AREA_HEIGHT + offset_y and player.y_vel < 0:
         offset_y += player.y_vel
         player.dead_height += player.y_vel
-    Platform.gen_platforms(
-        player.dead_height, offset_y, platforms, diff_level, platform_type
-    )
+    Platform.gen_platforms(player.dead_height, offset_y, platforms, diff_level)
     return offset_y
 
 
@@ -140,9 +150,7 @@ def game_loop(window):
         Platform(i, HEIGHT - 75, score.current_score, "basic")
         for i in range(0, WIDTH, 96)
     ]  # generate floor
-    Platform.gen_platforms(
-        player.dead_height, offset_y, platforms, score.current_score, "basic"
-    )
+    Platform.gen_platforms(player.dead_height, offset_y, platforms, 0)
 
     background, background_image = get_background("Blue.png")
 
@@ -158,7 +166,7 @@ def game_loop(window):
                     player.jump()
 
         player.loop()
-        handle_movement(player, *platforms)
+        handle_movement(player, platforms)
         draw_window(
             window,
             background,
@@ -170,7 +178,10 @@ def game_loop(window):
         )
 
         offset_y = handle_camera(
-            player, offset_y, platforms, score.current_score, "basic"
+            player,
+            offset_y,
+            platforms,
+            score.current_score,
         )
 
         score.update_current_score(-offset_y)
