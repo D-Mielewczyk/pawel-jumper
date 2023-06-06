@@ -20,9 +20,7 @@ def rotate(sprite):
 
 
 def load_sprites(path, width, height, do_rotate=False):
-    print(path)
     path = os.path.join("assets", path)
-    print(path)
     images = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
 
     sprites = {}
