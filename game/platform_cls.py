@@ -42,11 +42,12 @@ def load_platform(self, width, height):
 class Platform(Object):
     next_platform_height = HEIGHT - randint(90, 700)
     width = 96
+    TRAMP_SPRITE = (os.path.join("Traps", "Trampoline"), 28, 28)
+    DELAY_ANIMATION = 3
 
     def __init__(self, x, y, diff_level, type, width=96, height=10):
         super().__init__(x, y, width, height)
-        TRAMP_SPRITE = load_sprites("Traps/Trampoline", 28, 28)
-        DELAY_ANIMATION = 3
+
         self.type = type
         width = width_disc(type)
         height = height_disc(type)
@@ -56,7 +57,7 @@ class Platform(Object):
             scaled_width = max(96 - 8 * (diff_level // 15), 48)
         else:
             scaled_width = 96
-        original_image = load_platform(width, height)
+        original_image = load_platform(self, width, height)
         scaled_image = pygame.transform.scale(
             original_image, (scaled_width * 2, height * 2)
         )
