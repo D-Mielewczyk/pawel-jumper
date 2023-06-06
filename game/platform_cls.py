@@ -35,11 +35,11 @@ def load_platform(self, width, height):
         rect = pygame.Rect(0, 1, width, height)
     image = pygame.image.load(path).convert_alpha()
     surface = pygame.Surface((width, height), pygame.SRCALPHA, 32)
-<<<<<<< Updated upstream
-    rect = pygame.Rect(272, 0, width, height)
-=======
+
+    #rect = pygame.Rect(272, 0, width, height)
+
     
->>>>>>> Stashed changes
+
     surface.blit(image, (0, 0), rect)
     return pygame.transform.scale2x(surface)
 
@@ -47,11 +47,6 @@ def load_platform(self, width, height):
 class Platform(Object):
     next_platform_height = HEIGHT - randint(90, 700)
 
-<<<<<<< Updated upstream
-    def __init__(self, x, y, width=96, height=10):
-        super().__init__(x, y, width, height)
-        self.sprite.blit(load_platform(width, height), (0, 0))
-=======
     def __init__(self, x, y, diff_level, type, width = 96, height = 10):
         self.type = type
         width = width_disc(type)
@@ -67,16 +62,18 @@ class Platform(Object):
         original_image = load_platform(self, width, height)
         scaled_image = pygame.transform.scale(original_image, (scaled_width*2, height*2))
         self.sprite.blit(scaled_image, (0, 0))
->>>>>>> Stashed changes
         self.mask = pygame.mask.from_surface(self.sprite)
 
     @staticmethod
-    def gen_platforms(min_height, max_height, platforms):
+    def gen_platforms(min_height, max_height, diff_level, type, platforms):
         while Platform.next_platform_height >= max_height:
             platforms.append(
                 Platform(
                     randint(0, WIDTH - 96),
                     Platform.next_platform_height,
+                    diff_level, 
+                    type
+
                 )
             )
             Platform.next_platform_height -= randint(0, 625)
