@@ -10,7 +10,7 @@ class Score:
     def load_best_score(self):
         try:
             with open("best_score.txt", "r") as file:
-                self.best_score = int(float(file.read()))
+                self.best_score = int(file.read())
         except FileNotFoundError:
             self.best_score = 0
         if self.best_score < self.current_score:
@@ -21,7 +21,7 @@ class Score:
 
     def update_current_score(self, height):
         if height // 500 > self.current_score:
-            self.current_score = height // 500
+            self.current_score = int(height // 500)
 
     def draw(self, window):
         text = GAME_FONT_BIG.render(
